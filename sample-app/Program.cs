@@ -7,7 +7,16 @@ class Program
     static async Task Main(string[] args)
     {
         // Connect to Redis
-        ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("redis:6379");
+        // ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost:6379");
+
+        var options = new ConfigurationOptions
+        {
+            EndPoints = { "localhost:6381" },
+            Proxy = Proxy.Twemproxy
+        };
+
+        ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(options);
+
 
         // Create 100 threads
         Task[] tasks = new Task[1];

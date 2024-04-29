@@ -5,15 +5,28 @@ services:
     build:
       context: sample-app
       dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
     depends_on:
       - redis
 
   redis:
-    image: redis:7
+    image: redis:6
     ports:
       - "6379:6379"
+
+  twemproxy:
+    image: malexer/twemproxy:0.5.0
+    environment:
+      LISTEN_PORT: 6381
+      REDIS_SERVERS: redis:6379:1
+      AUTO_EJECT_HOSTS: false
+      TIMEOUT: 5000
+      SERVER_RETRY_TIMEOUT: 5000
+      SERVER_FAILURE_LIMIT: 3
+      SERVER_CONNECTIONS: 40
+      PRECONNECT: true
+    network_mode: "service:app"
+    depends_on:
+      - redis
 
   netshoot:
     image: nicolaka/netshoot
